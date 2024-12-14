@@ -40,7 +40,7 @@ let addBook (newBook: Book) (filePath: string) (listView: ListView) =
     if String.IsNullOrWhiteSpace(newBook.title) then
         MessageBox.Show("Book title cannot be empty or whitespace.") |> ignore
     else
-        let options = JsonSerializerOptions(PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = false)
+        let options = JsonSerializerOptions(PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = true)
         let books = 
             if File.Exists(filePath) then
                 try JsonSerializer.Deserialize<Book list>(File.ReadAllText(filePath), options)
@@ -87,7 +87,7 @@ let borrowBook (title: string) (filePath: string) (listView: ListView) =
         MessageBox.Show("Please enter a valid book title to borrow.") |> ignore
     elif File.Exists(filePath) then
         let jsonString = File.ReadAllText(filePath)
-        let options = JsonSerializerOptions(PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = false)
+        let options = JsonSerializerOptions(PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = true)
         try
             let books = JsonSerializer.Deserialize<Book list>(jsonString, options)
             let bookFound = ref false
@@ -123,7 +123,7 @@ let returnBorrowedBook (title: string) (filePath: string) (listView: ListView) =
         MessageBox.Show("Please enter a valid book title to return.") |> ignore
     elif File.Exists(filePath) then
         let jsonString = File.ReadAllText(filePath)
-        let options = JsonSerializerOptions(PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = false)
+        let options = JsonSerializerOptions(PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = true)
         try
             let books = JsonSerializer.Deserialize<Book list>(jsonString, options)
             let bookFound = ref false

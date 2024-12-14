@@ -1,1 +1,44 @@
-[{"title":"The Hobbit","author":"J.R.R. Tolkien","genre":"Fantasy","isBorrowed":true,"borrowDate":"2024-11-12T09:20:00"},{"title":"1984","author":"George Orwell","genre":"Dystopian","isBorrowed":false,"borrowDate":null},{"title":"the same","author":"salma","genre":"drama","isBorrowed":true,"borrowDate":"2024-12-14T21:50:42.3091907+02:00"},{"title":"salmaaaa","author":"sama","genre":"Black comedy","isBorrowed":false,"borrowDate":null},{"title":"F# for Fun and Profit","author":"Scott Wlaschin","genre":"Programming","isBorrowed":true,"borrowDate":"2024-12-11T00:00:00"},{"title":"shehab","author":"Shehap","genre":"Comedy","isBorrowed":false,"borrowDate":null}]
+[
+  {
+    "title": "The Hobbit",
+    "author": "J.R.R. Tolkien",
+    "genre": "Fantasy",
+    "isBorrowed": true,
+    "borrowDate": "2024-11-12T09:20:00"
+  },
+  {
+    "title": "1984",
+    "author": "George Orwell",
+    "genre": "Dystopian",
+    "isBorrowed": false,
+    "borrowDate": null
+  },
+  {
+    "title": "the same",
+    "author": "salma",
+    "genre": "drama",
+    "isBorrowed": true,
+    "borrowDate": "2024-12-14T21:50:42.3091907+02:00"
+  },
+  {
+    "title": "salmaaaa",
+    "author": "sama",
+    "genre": "Black comedy",
+    "isBorrowed": false,
+    "borrowDate": null
+  },
+  {
+    "title": "F# for Fun and Profit",
+    "author": "Scott Wlaschin",
+    "genre": "Programming",
+    "isBorrowed": true,
+    "borrowDate": "2024-12-11T00:00:00"
+  },
+  {
+    "title": "shehab",
+    "author": "Shehap",
+    "genre": "Comedy",
+    "isBorrowed": false,
+    "borrowDate": null
+  }
+]
