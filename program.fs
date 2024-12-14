@@ -181,15 +181,20 @@ booksListView.Columns.Add("Status", 180) |> ignore
 let filePath = "books.json"
 
 // Event Handlers
+
 addButton.Click.Add(fun _ -> 
-    let newBook = {
-        title = titleTextBox.Text
-        author = authorTextBox.Text
-        genre = genreTextBox.Text
-        isBorrowed = false
-        borrowDate = None
-    }
-    addBook newBook filePath booksListView
+    // Check if any of the fields are empty
+    if String.IsNullOrWhiteSpace(titleTextBox.Text) || String.IsNullOrWhiteSpace(authorTextBox.Text) || String.IsNullOrWhiteSpace(genreTextBox.Text) then
+        MessageBox.Show("Please fill out all fields (Title, Author, and Genre) before adding the book.") |> ignore
+    else
+        let newBook = {
+            title = titleTextBox.Text
+            author = authorTextBox.Text
+            genre = genreTextBox.Text
+            isBorrowed = false
+            borrowDate = None
+        }
+        addBook newBook filePath booksListView
 )
 
 searchButton.Click.Add(fun _ -> 
