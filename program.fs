@@ -1,3 +1,5 @@
+module program.fs
+
 open System
 open System.Windows.Forms
 open System.Text.Json
@@ -37,25 +39,35 @@ let displayBooks (filePath: string) (listView: ListView) =
 
 // Function to add a new book
 let addBook (newBook: Book) (filePath: string) (listView: ListView) =
-    let options = JsonSerializerOptions(PropertyNamingPolicy = JsonNamingPolicy.CamelCase)
-    let books = 
-        if File.Exists(filePath) then
-            try JsonSerializer.Deserialize<Book list>(File.ReadAllText(filePath), options)
-            with _ -> []
-        else []
-    
-    let updatedBooks = newBook :: books
-    let updatedJson = JsonSerializer.Serialize(updatedBooks, options)
-    File.WriteAllText(filePath, updatedJson)
-    
-    // Refresh the ListView to display the updated list of books
-    displayBooks filePath listView
+    if String.IsNullOrWhiteSpace(newBook.title) then
+        MessageBox.Show("The book title cannot be empty. Please enter a valid title.") |> ignore
+    else
+        let options = JsonSerializerOptions(PropertyNamingPolicy = JsonNamingPolicy.CamelCase)
+        let books = 
+            if File.Exists(filePath) then
+                try JsonSerializer.Deserialize<Book list>(File.ReadAllText(filePath), options)
+                with _ -> []
+            else []
 
-    MessageBox.Show(sprintf "Book '%s' added successfully." newBook.title) |> ignore
+        // Check for duplicates by title
+        if books |> List.exists (fun book -> book.title.Equals(newBook.title, StringComparison.OrdinalIgnoreCase)) then
+            MessageBox.Show(sprintf "A book with the title '%s' already exists." newBook.title) |> ignore
+        else
+            // Add the new book if no duplicate found
+            let updatedBooks = newBook :: books
+            let updatedJson = JsonSerializer.Serialize(updatedBooks, options)
+            File.WriteAllText(filePath, updatedJson)
+            
+            // Refresh the ListView to display the updated list of books
+            displayBooks filePath listView
+
+            MessageBox.Show(sprintf "Book '%s' added successfully." newBook.title) |> ignore
 
 // Function to search for a book
 let searchBook (title: string) (filePath: string) =
-    if File.Exists(filePath) then
+    if String.IsNullOrWhiteSpace(title) then
+        MessageBox.Show("Please enter a book title to search.") |> ignore
+    else if File.Exists(filePath) then
         let jsonString = File.ReadAllText(filePath)
         let options = JsonSerializerOptions(PropertyNamingPolicy = JsonNamingPolicy.CamelCase)
         try
@@ -66,7 +78,12 @@ let searchBook (title: string) (filePath: string) =
             else
                 foundBooks |> List.iter (fun book -> 
                     let status = if book.isBorrowed then "Borrowed" else "Available"
-                    MessageBox.Show(sprintf "Title: %s, Author: %s, Genre: %s, Status: %s" book.title book.author book.genre status) |> ignore
+                    let borrowDate = 
+                        if book.isBorrowed then 
+                            sprintf " (Borrowed on %s)" (book.borrowDate.Value.ToString("yyyy-MM-dd HH:mm"))
+                        else ""
+                    MessageBox.Show(sprintf "Title: %s, Author: %s, Genre: %s, Status: %s%s" 
+                        book.title book.author book.genre status borrowDate) |> ignore
                 )
         with
         | ex -> 
@@ -76,7 +93,9 @@ let searchBook (title: string) (filePath: string) =
 
 // Function to borrow a book
 let borrowBook (title: string) (filePath: string) =
-    if File.Exists(filePath) then
+    if String.IsNullOrWhiteSpace(title) then
+        MessageBox.Show("Please enter a book title.") |> ignore
+    else if File.Exists(filePath) then
         let jsonString = File.ReadAllText(filePath)
         let options = JsonSerializerOptions(PropertyNamingPolicy = JsonNamingPolicy.CamelCase)
         try
@@ -85,17 +104,13 @@ let borrowBook (title: string) (filePath: string) =
 
             let updatedBooks = 
                 books |> List.map (fun book ->
-                    if book.title = title then
+                    if book.title.Equals(title, StringComparison.OrdinalIgnoreCase) then
                         bookFound := true
                         if book.isBorrowed then
-                            MessageBox.Show(sprintf "Book '%s' is already borrowed since %s." 
-                                title (book.borrowDate.Value.ToString("yyyy-MM-dd HH:mm"))) |> ignore
+                            MessageBox.Show(sprintf "Book '%s' is already borrowed." title) |> ignore
                             book
                         else
-                            let borrowDate = DateTime.Now
-                            MessageBox.Show(sprintf "Book '%s' borrowed successfully on %s." 
-                                title (borrowDate.ToString("yyyy-MM-dd HH:mm"))) |> ignore
-                            { book with isBorrowed = true; borrowDate = Some borrowDate }
+                            { book with isBorrowed = true; borrowDate = Some DateTime.Now }
                     else book
                 )
 
@@ -104,6 +119,7 @@ let borrowBook (title: string) (filePath: string) =
             else
                 let updatedJson = JsonSerializer.Serialize(updatedBooks, options)
                 File.WriteAllText(filePath, updatedJson)
+                MessageBox.Show(sprintf "Book '%s' borrowed successfully on %s." title (DateTime.Now.ToString("yyyy-MM-dd"))) |> ignore
         with
         | ex -> MessageBox.Show(sprintf "Error: %s" ex.Message) |> ignore
     else
@@ -112,7 +128,9 @@ let borrowBook (title: string) (filePath: string) =
 
 // Return a Borrowed Book
 let returnBorrowedBook (title: string) (filePath: string) =
-    if File.Exists(filePath) then
+    if String.IsNullOrWhiteSpace(title) then
+        MessageBox.Show("Please enter a book title.") |> ignore
+    else if File.Exists(filePath) then
         let jsonString = File.ReadAllText(filePath)
         let options = JsonSerializerOptions(PropertyNamingPolicy = JsonNamingPolicy.CamelCase)
         try
@@ -121,15 +139,9 @@ let returnBorrowedBook (title: string) (filePath: string) =
 
             let updatedBooks = 
                 books |> List.map (fun book ->
-                    if book.title = title then
+                    if book.title.Equals(title, StringComparison.OrdinalIgnoreCase) then
                         bookFound := true
                         if book.isBorrowed then
-                            let borrowDate = book.borrowDate.Value
-                            let returnDate = DateTime.Now
-                            MessageBox.Show(sprintf "Book '%s' returned successfully.\nBorrowed Date: %s\nReturned Date: %s" 
-                                title 
-                                (borrowDate.ToString("yyyy-MM-dd HH:mm")) 
-                                (returnDate.ToString("yyyy-MM-dd HH:mm"))) |> ignore
                             { book with isBorrowed = false; borrowDate = None }
                         else
                             MessageBox.Show(sprintf "Book '%s' is not currently borrowed." title) |> ignore
@@ -142,6 +154,7 @@ let returnBorrowedBook (title: string) (filePath: string) =
             else
                 let updatedJson = JsonSerializer.Serialize(updatedBooks, options)
                 File.WriteAllText(filePath, updatedJson)
+                MessageBox.Show(sprintf "Book '%s' returned successfully." title) |> ignore
         with
         | ex -> MessageBox.Show(sprintf "Error: %s" ex.Message) |> ignore
     else

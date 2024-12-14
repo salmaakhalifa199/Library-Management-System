@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lenovo\\Downloads\\Library-Management-System-main\\project.fsproj": {}
+    "C:\\Users\\lenovo\\Downloads\\PL3 Project\\Library-Management-System\\project.fsproj": {}
   },
   "projects": {
-    "C:\\Users\\lenovo\\Downloads\\Library-Management-System-main\\project.fsproj": {
+    "C:\\Users\\lenovo\\Downloads\\PL3 Project\\Library-Management-System\\project.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lenovo\\Downloads\\Library-Management-System-main\\project.fsproj",
+        "projectUniqueName": "C:\\Users\\lenovo\\Downloads\\PL3 Project\\Library-Management-System\\project.fsproj",
         "projectName": "project",
-        "projectPath": "C:\\Users\\lenovo\\Downloads\\Library-Management-System-main\\project.fsproj",
+        "projectPath": "C:\\Users\\lenovo\\Downloads\\PL3 Project\\Library-Management-System\\project.fsproj",
         "packagesPath": "C:\\Users\\lenovo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lenovo\\Downloads\\Library-Management-System-main\\obj\\",
+        "outputPath": "C:\\Users\\lenovo\\Downloads\\PL3 Project\\Library-Management-System\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
