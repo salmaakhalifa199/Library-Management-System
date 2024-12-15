@@ -13,15 +13,13 @@ type Book = {
     borrowDate: DateTime option
 }
 
-// Function to display all books
+// display all books
 let displayBooks (filePath: string) (listView: ListView) =
-    // Clear the current items in the ListView
     listView.Items.Clear()
     
     if File.Exists(filePath) then
         let jsonString = File.ReadAllText(filePath)
         let options = JsonSerializerOptions(PropertyNamingPolicy = JsonNamingPolicy.CamelCase)
-        
         try
             let books = JsonSerializer.Deserialize<Book list>(jsonString, options)
             books |> List.iter (fun book -> 
@@ -35,7 +33,7 @@ let displayBooks (filePath: string) (listView: ListView) =
     else
         MessageBox.Show(sprintf "File %s does not exist." filePath) |> ignore
 
-// Function to add a new book
+// add a new book
 let addBook (newBook: Book) (filePath: string) (listView: ListView) =
     if String.IsNullOrWhiteSpace(newBook.title) then
         MessageBox.Show("Book title cannot be empty or whitespace.") |> ignore
@@ -46,19 +44,16 @@ let addBook (newBook: Book) (filePath: string) (listView: ListView) =
                 try JsonSerializer.Deserialize<Book list>(File.ReadAllText(filePath), options)
                 with _ -> []
             else []
-
-        // Check for duplicates
         if books |> List.exists (fun book -> book.title = newBook.title) then
             MessageBox.Show(sprintf "The book '%s' already exists." newBook.title) |> ignore
         else
             let updatedBooks = newBook :: books
             let updatedJson = JsonSerializer.Serialize(updatedBooks, options)
             File.WriteAllText(filePath, updatedJson)
-            // Automatically refresh the book display
             displayBooks filePath listView
             MessageBox.Show(sprintf "Book '%s' added successfully." newBook.title) |> ignore
 
-// Function to search for a book
+// search a book
 let searchBook (title: string) (filePath: string) =
     if String.IsNullOrWhiteSpace(title) then
         MessageBox.Show("Please enter a valid book title to search.") |> ignore
@@ -81,7 +76,7 @@ let searchBook (title: string) (filePath: string) =
     else
         MessageBox.Show(sprintf "File %s does not exist." filePath) |> ignore
 
-// Function to borrow book        
+// borrow a book        
 let borrowBook (title: string) (filePath: string) (listView: ListView) =
     if String.IsNullOrWhiteSpace(title) then
         MessageBox.Show("Please enter a valid book title to borrow.") |> ignore
@@ -109,7 +104,6 @@ let borrowBook (title: string) (filePath: string) (listView: ListView) =
             else
                 let updatedJson = JsonSerializer.Serialize(updatedBooks, options)
                 File.WriteAllText(filePath, updatedJson)
-                // Automatically refresh the book display
                 displayBooks filePath listView
                 MessageBox.Show(sprintf "Book '%s' borrowed successfully on %s." title (DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))) |> ignore
         with
@@ -117,7 +111,7 @@ let borrowBook (title: string) (filePath: string) (listView: ListView) =
     else
         MessageBox.Show(sprintf "File %s does not exist." filePath) |> ignore
 
-// Return a Borrowed Book
+// Return a Book
 let returnBorrowedBook (title: string) (filePath: string) (listView: ListView) =
     if String.IsNullOrWhiteSpace(title) then
         MessageBox.Show("Please enter a valid book title to return.") |> ignore
@@ -180,10 +174,7 @@ booksListView.Columns.Add("Status", 180) |> ignore
 
 let filePath = "books.json"
 
-// Event Handlers
-
 addButton.Click.Add(fun _ -> 
-    // Check if any of the fields are empty
     if String.IsNullOrWhiteSpace(titleTextBox.Text) || String.IsNullOrWhiteSpace(authorTextBox.Text) || String.IsNullOrWhiteSpace(genreTextBox.Text) then
         MessageBox.Show("Please fill out all fields (Title, Author, and Genre) before adding the book.") |> ignore
     else
@@ -214,7 +205,6 @@ returnButton.Click.Add(fun _ ->
 
 displayBooks filePath booksListView
 
-// Add controls to form
 form.Controls.AddRange([| titleLabel; titleTextBox; authorLabel; authorTextBox;
                           genreLabel; genreTextBox; addButton; searchButton;
                           borrowButton; returnButton; displayLabel; booksListView |])
