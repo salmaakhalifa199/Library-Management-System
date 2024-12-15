@@ -1,5 +1,12 @@
 [
   {
+    "title": "the trio",
+    "author": "sama",
+    "genre": "hals",
+    "isBorrowed": true,
+    "borrowDate": "2024-12-15T02:47:51.395984+02:00"
+  },
+  {
     "title": "The Hobbit",
     "author": "J.R.R. Tolkien",
     "genre": "Fantasy",
